@@ -1,3 +1,4 @@
+import { movieSort } from "./functions";
 import { IMovie } from "./models/Movie";
 import { getData } from "./services/movieService";
 
@@ -9,11 +10,22 @@ export const init = () => {
     e.preventDefault();
     handleSubmit();
   });
+
+  let select = document.getElementById("sortSelect") as HTMLSelectElement;
+  select.addEventListener("change", () => {
+    let container = document.getElementById(
+      "movie-container"
+    ) as HTMLDivElement;
+    container.innerHTML = "";
+
+    const ascending = select.value === "asc";
+    createHtml(movieSort(movies, ascending), container);
+  });
 };
 
 export async function handleSubmit() {
-  let searchText = (document.getElementById("searchText") as HTMLInputElement)
-    .value;
+  let searchInput = document.getElementById("searchText") as HTMLInputElement;
+  let searchText = searchInput.value;
 
   let container: HTMLDivElement = document.getElementById(
     "movie-container"
@@ -31,6 +43,7 @@ export async function handleSubmit() {
   } catch {
     displayNoResult(container);
   }
+  searchInput.value = "";
 }
 
 export const createHtml = (movies: IMovie[], container: HTMLDivElement) => {
